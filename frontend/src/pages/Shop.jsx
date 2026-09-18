@@ -9,11 +9,12 @@ import {
   setChecked,
 } from "../redux/features/shop/shopSlice";
 import Loader from "../components/Loader";
+import Message from "../components/Message";
 import ProductCard from "./Products/ProductCard";
 
 const Shop = () => {
   const dispatch = useDispatch();
-  const { categories, products, checked, radio } = useSelector(
+  const { categories, products = [], checked, radio } = useSelector(
     (state) => state.shop
   );
 
@@ -27,16 +28,16 @@ const Shop = () => {
   });
 
   useEffect(() => {
-    if (!categoriesQuery.isLoading) {
-      dispatch(setCategories(categoriesQuery.data));
+    if (!categoriesQuery.isLoading && !categoriesQuery.isError) {
+      dispatch(setCategories(categoriesQuery.data || []));
     }
   }, [categoriesQuery.data, dispatch]);
 
   useEffect(() => {
     if (!checked.length || !radio.length) {
-      if (!filteredProductsQuery.isLoading) {
+      if (!filteredProductsQuery.isLoading && !filteredProductsQuery.isError) {
         // Filter products based on both checked categories and price filter
-        const filteredProducts = filteredProductsQuery.data.filter(
+        const filteredProducts = (filteredProductsQuery.data || []).filter(
           (product) => {
             // Check if the product price includes the entered price filter value
             return (
@@ -49,7 +50,7 @@ const Shop = () => {
         dispatch(setProducts(filteredProducts));
       }
     }
-  }, [checked, radio, filteredProductsQuery.data, dispatch, priceFilter]);
+  }, [checked, radio, filteredProductsQuery.data, filteredProductsQuery.isError, filteredProductsQuery.isLoading, dispatch, priceFilter]);
 
   const handleBrandClick = (brand) => {
     const productsByBrand = filteredProductsQuery.data?.filter(
@@ -172,6 +173,7 @@ const Shop = () => {
           </div>
 
           <div className="p-3">
+            {filteredProductsQuery.isError && <Message variant="danger">Unable to load products. Please try again.</Message>}
             <h2 className="h4 text-center mb-2">{products?.length} Products</h2>
             <div className="flex flex-wrap">
               {products.length === 0 ? (

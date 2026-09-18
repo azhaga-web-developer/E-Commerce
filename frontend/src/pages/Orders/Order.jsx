@@ -46,7 +46,7 @@ const Order = () => {
   };
 
   if (isLoading) return <Loader />;
-  if (error) return <Message variant="danger">{error.data.message}</Message>;
+  if (error) return <Message variant="danger">{error?.data?.message || error?.error || "Unable to load order"}</Message>;
 
   return (
     <div className="page-shell order-detail-page">

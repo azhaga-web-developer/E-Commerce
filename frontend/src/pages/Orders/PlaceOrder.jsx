@@ -81,7 +81,7 @@ const PlaceOrder = () => {
         <div className="review-side-column">
           <div className="review-summary-card"><div className="order-card-heading"><h2>Order summary</h2><span>USD</span></div><div className="summary-line"><span>Items</span><span>$ {cart.itemsPrice}</span></div><div className="summary-line"><span>Shipping</span><span>$ {cart.shippingPrice}</span></div><div className="summary-line"><span>Tax</span><span>$ {cart.taxPrice}</span></div><div className="summary-total"><span>Total</span><strong>$ {cart.totalPrice}</strong></div>
 
-            {error && <Message variant="danger">{error.data.message}</Message>}
+            {error && <Message variant="danger">{error?.data?.message || error?.error || "Unable to place order"}</Message>}
             <button type="button" className="accent-button place-order-button" disabled={cart.cartItems === 0} onClick={placeOrderHandler}>Place order</button>
             {isLoading && <Loader />}
           </div>
